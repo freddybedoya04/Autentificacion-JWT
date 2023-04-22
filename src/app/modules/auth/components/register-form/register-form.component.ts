@@ -40,10 +40,10 @@ export class RegisterFormComponent {
     if (this.form.valid) {
       this.status = 'loading';
       const { name, email, password } = this.form.getRawValue();
-      this._auth.register(email, password,name).subscribe({
+      this._auth.registerAndLogin(email, password,name).subscribe({
         next:()=>{
           this.status='success';
-          this.router.navigate(['/login'])
+          this.router.navigate(['/app/boards'])
         },
         error:(error)=>{
           this.status='failed';

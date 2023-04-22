@@ -5,6 +5,8 @@ import {
   faClose,
   faAngleDown
 } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from '@services/auth.service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -19,5 +21,10 @@ export class NavbarComponent {
   isOpenOverlayAvatar = false;
   isOpenOverlayBoards = false;
 
-  constructor() {}
+  constructor(private _auth:AuthService,private router:Router) {}
+
+  logOut(){
+    this._auth.logOut();
+    this.router.navigate(['/login'])
+  }
 }
