@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParameterCodec} from '@angular/common/http';
 import {environment} from '@environments/environment';
-import { switchMap,tap } from 'rxjs';
+import { BehaviorSubject, switchMap,tap } from 'rxjs';
 import { TokenService } from '@services/token.service';
 import{ResponseLogin} from '@models/auth.model'
+import { User } from '@models/user.model';
+import {checkToken} from '@interceptors/token.interceptor'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl:string=environment.API_URL;
+  user$=new BehaviorSubject<User | null>(null);
   constructor(private http:HttpClient,private _token:TokenService) { }
 
   login(email:string,password:string){
@@ -52,5 +55,18 @@ export class AuthService {
    }
    logOut(){
     this._token.removeToken();
+   }
+
+   getProfile(){
+    return this.http.get<User>(this.apiUrl + '/api/v1/auth/profile',    {
+      context:checkToken()
+    }).pipe(
+      tap(user=>{
+        this.user$.next(user)
+      })
+    )
+   }
+   getDataUser(){
+    return this.user$.getValue();
    }
 }
